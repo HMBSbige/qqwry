@@ -14,7 +14,7 @@ jobs:
       - name: Download innoextract
         run: |
           wget https://github.com/dscharrer/innoextract/releases/download/${{ env.innoextract_version }}/innoextract-${{ env.innoextract_version }}-linux.tar.xz
-          tar -xvf innoextract-${{ env.innoextract_version }}-linux.tar.xz innoextract-${{ env.innoextract_version }}-linux/bin/${{ env.amd64 }}/innoextract --strip-components 3
+          tar -xvf innoextract-${{ env.innoextract_version }}-linux.tar.xz innoextract-${{ env.innoextract_version }}-linux/bin/${{ env.arch }}/innoextract --strip-components 3
 
       - name: Get qqwry.dat
         id: dat_date
