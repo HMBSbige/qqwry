@@ -1,0 +1,36 @@
+name: CI
+on: [push, workflow_dispatch]
+env:
+  innoextract_version: 1.9
+  arch: amd64
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Download innoextract
+        run: |
+          wget https://github.com/dscharrer/innoextract/releases/download/${{ env.innoextract_version }}/innoextract-${{ env.innoextract_version }}-linux.tar.xz
+          tar -xvf innoextract-${{ env.innoextract_version }}-linux.tar.xz innoextract-${{ env.innoextract_version }}-linux/bin/${{ env.amd64 }}/innoextract --strip-components 3
+
+      - name: Get qqwry.dat
+        id: dat_date
+        shell: pwsh
+        run: |
+          $zip = (Get-ChildItem data\*.zip)[0].FullName
+          $filename = (Get-ChildItem data\*.zip)[0].Name
+          $name = $filename.Substring($filename.IndexOf('-') + 1 , $filename.length - $filename.IndexOf('-') - 5)
+          Write-Output "::set-output name=dat_date::$name"
+          7z e -y $zip setup.exe
+          innoextract setup.exe -I qqwry.dat
+
+      - name: Create Release
+        uses: ncipollo/release-action@v1
+        with:
+          commit: ${{ env.GITHUB_SHA }}
+          tag: ${{ steps.dat_date.outputs.dat_date }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          artifacts: app\qqwry.dat
