@@ -25,7 +25,7 @@ jobs:
           $name = $filename.Substring($filename.IndexOf('-') + 1 , $filename.length - $filename.IndexOf('-') - 5)
           Write-Output "::set-output name=dat_date::$name"
           7z e -y $zip setup.exe
-          innoextract setup.exe -I qqwry.dat
+          ./innoextract setup.exe -I qqwry.dat
 
       - name: Create Release
         uses: ncipollo/release-action@v1
